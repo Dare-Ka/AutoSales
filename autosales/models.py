@@ -49,7 +49,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ["first_name", "last_name"]
     objects = UserManager()
     USERNAME_FIELD = "email"
-    email = models.EmailField(verbose_name=_("email address"), unique=True)
+    email = models.EmailField(verbose_name=_("Email address"), unique=True)
     company = models.CharField(verbose_name=_("Company"), max_length=40, blank=True)
     position = models.CharField(verbose_name=_("Position"), max_length=40, blank=True)
     username_validator = UnicodeUsernameValidator()
@@ -79,7 +79,7 @@ class User(AbstractUser):
         default="buyer",
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.first_name} {self.last_name} "
 
     class Meta:
@@ -106,5 +106,38 @@ class Shop(models.Model):
         verbose_name_plural = "Список магазинов"
         ordering = ("-name",)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.name}: {self.url}"
+
+
+class Category(models.Model):
+    name = models.CharField(verbose_name=_("Name"), max_length=40)
+    shops = models.ManyToManyField(
+        Shop, verbose_name=_("Shops"), related_name="categories", blank=True
+    )
+
+    class Meta:
+        verbose_name = "Категория"
+        verbose_name_plural = "Список категорий"
+        ordering = ("-name",)
+
+    def __str__(self) -> str:
+        return f"{self.name}: {self.shops}"
+
+
+class Product(models.Model):
+    name = models.CharField(verbose_name=_("Name"), max_length=80)
+    categories = models.ManyToManyField(
+        Category,
+        verbose_name=_("Categories)"),
+        related_name="categories",
+        blank=True,
+    )
+
+    class Meta:
+        verbose_name = "Продукт"
+        verbose_name_plural = "Список продуктов"
+        ordering = ("-name",)
+
+    def __str__(self) -> str:
+        return f"{self.name}: {self.categories}"
