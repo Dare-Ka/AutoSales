@@ -1,3 +1,5 @@
+from typing import Any
+
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
@@ -22,7 +24,9 @@ USER_TYPE_CHOICES = (
 
 # Create your models here.
 class UserManager(BaseUserManager):
-    def create_user(self, email, password=None, **extra_fields):
+    def create_user(
+        self, email: str, password: str | None = None, **extra_fields: Any
+    ) -> "User":
         if not email:
             raise ValueError(_("Users must have an email address"))
         extra_fields.setdefault("is_stuff", False)
@@ -33,7 +37,9 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password, **extra_fields):
+    def create_superuser(
+        self, email: str, password: str, **extra_fields: Any
+    ) -> "User":
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
 
@@ -141,3 +147,37 @@ class Product(models.Model):
 
     def __str__(self) -> str:
         return f"{self.name}: {self.categories}"
+
+
+class ProductInfo(models.Model):
+    model = models.CharField(verbose_name=_("Model"), max_length=80, blank=True)
+    external_id = models.PositiveIntegerField(verbose_name=_("External ID"))
+    product = models.ForeignKey(
+        Product,
+        verbose_name=_("Product"),
+        related_name="product_infos",
+        blank=True,
+        on_delete=models.CASCADE,
+    )
+    shop = models.ForeignKey(
+        Shop,
+        verbose_name=_("Shop"),
+        related_name="product_infos",
+        blank=True,
+        on_delete=models.CASCADE,
+    )
+    quantity = models.PositiveIntegerField(verbose_name=_("Quantity"))
+    price = models.PositiveIntegerField(verbose_name=_("Price"))
+    price_rrc = models.PositiveIntegerField(verbose_name=_("Recommended retail price"))
+
+    class Meta:
+        verbose_name = "Информация о продукте"
+        verbose_name_plural = "Информационный список о продуктах"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["product", "shop", "external_id"], name="unique_product_info"
+            ),
+        ]
+
+    def __str__(self) -> str:
+        return self.model
