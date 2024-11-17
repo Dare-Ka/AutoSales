@@ -216,7 +216,7 @@ class Parameter(models.Model):
         ordering = ("-name",)
 
     def __str__(self) -> str:
-        return self.name
+        return str(self.name)
 
 
 class ProductParameter(models.Model):
@@ -244,3 +244,34 @@ class ProductParameter(models.Model):
                 fields=["product_info", "parameter"], name="unique_product_parameter"
             ),
         ]
+
+
+class Order(models.Model):
+    user = models.ForeignKey(
+        User,
+        verbose_name=_("User"),
+        related_name="orders",
+        blank=True,
+        on_delete=models.CASCADE,
+    )
+    date_time = models.DateTimeField(auto_now_add=True)
+    state = models.CharField(
+        verbose_name=_("State"),
+        choices=STATE_CHOICES,
+        max_length=15,
+    )
+    contact = models.ForeignKey(
+        Contact,
+        verbose_name=_("Contact"),
+        blank=False,
+        null=False,
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        verbose_name = 'Заказ'
+        verbose_name_plural = "Список заказ"
+        ordering = ('-date_time',)
+
+    def __str__(self) -> str:
+        return f"{self.user}: {self.date_time}"
