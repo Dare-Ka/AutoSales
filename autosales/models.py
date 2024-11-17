@@ -116,6 +116,30 @@ class Shop(models.Model):
         return f"{self.name}: {self.url}"
 
 
+class Contact(models.Model):
+    user = models.ForeignKey(
+        User,
+        verbose_name=_("User"),
+        related_name="contacts",
+        blank=True,
+        on_delete=models.CASCADE,
+    )
+    city = models.CharField(max_length=50, verbose_name=_("City"))
+    street = models.CharField(max_length=100, verbose_name=_("Street"))
+    house = models.CharField(max_length=15, verbose_name=_("House"), blank=True)
+    structure = models.CharField(max_length=15, verbose_name=_("Structure"), blank=True)
+    building = models.CharField(max_length=15, verbose_name=_("Building"), blank=True)
+    apartment = models.CharField(max_length=15, verbose_name=_("Apartment"), blank=True)
+    phone = models.CharField(max_length=20, verbose_name=_("Phone number"))
+
+    class Meta:
+        verbose_name = "Контакты пользователя"
+        verbose_name_plural = "Список контактов пользователя"
+
+    def __str__(self) -> str:
+        return f"{self.user}:{self.city} {self.street} {self.house}"
+
+
 class Category(models.Model):
     name = models.CharField(verbose_name=_("Name"), max_length=40)
     shops = models.ManyToManyField(
@@ -191,7 +215,7 @@ class Parameter(models.Model):
         verbose_name_plural = "Список имен параметров"
         ordering = ("-name",)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
 
