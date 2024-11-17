@@ -24,7 +24,7 @@ USER_TYPE_CHOICES = (
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
-            raise ValueError("Users must have an email address")
+            raise ValueError(_("Users must have an email address"))
         extra_fields.setdefault("is_stuff", False)
         extra_fields.setdefault("is_superuser", False)
         email = self.normalize_email(email)
@@ -38,15 +38,15 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault("is_superuser", True)
 
         if extra_fields.get("is_staff") is not True:
-            raise ValueError("Superuser must have is_staff=True.")
+            raise ValueError(_("Superuser must have is_staff=True."))
         if extra_fields.get("is_superuser") is not True:
-            raise ValueError("Superuser must have is_superuser=True.")
+            raise ValueError(_("Superuser must have is_superuser=True."))
 
         return self.create_user(email, password, **extra_fields)
 
 
 class User(AbstractUser):
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ["first_name", "last_name"]
     objects = UserManager()
     USERNAME_FIELD = "email"
     email = models.EmailField(verbose_name=_("email address"), unique=True)
@@ -86,3 +86,25 @@ class User(AbstractUser):
         verbose_name = "Пользователь"
         verbose_name_plural = "Список пользователей"
         ordering = ("email",)
+
+
+class Shop(models.Model):
+    name = models.CharField(verbose_name=_("Name"), max_length=50)
+    url = models.URLField(verbose_name=_("Link"), null=True, blank=True)
+    user = models.ForeignKey(
+        User,
+        verbose_name=_("User"),
+        on_delete=models.CASCADE,
+        related_name="shops",
+        blank=True,
+        null=True,
+    )
+    state = models.BooleanField(verbose_name=_("Order receipt status"), default=True)
+
+    class Meta:
+        verbose_name = "Магазин"
+        verbose_name_plural = "Список магазинов"
+        ordering = ("-name",)
+
+    def __str__(self):
+        return f"{self.name}: {self.url}"
