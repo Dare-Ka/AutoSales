@@ -2,9 +2,9 @@ from typing import Optional
 
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.utils.translation import gettext_lazy as _
 from django.db import models
+from phonenumber_field.modelfields import PhoneNumberField
 
 
 USER_TYPE_CHOICES = (
@@ -42,32 +42,12 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractUser):
-    REQUIRED_FIELDS = ["first_name", "last_name"]
+    REQUIRED_FIELDS = ["first_name", "last_name", "username"]
     objects = UserManager()
     USERNAME_FIELD = "email"
     email = models.EmailField(verbose_name=_("Email address"), unique=True)
     company = models.CharField(verbose_name=_("Company"), max_length=40, blank=True)
     position = models.CharField(verbose_name=_("Position"), max_length=40, blank=True)
-    username_validator = UnicodeUsernameValidator()
-    username = models.CharField(
-        verbose_name=_("Username"),
-        help_text=_(
-            "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
-        ),
-        max_length=150,
-        validators=[username_validator],
-        error_messages={
-            "unique": _("A user with that username already exists."),
-        },
-    )
-    is_active = models.BooleanField(
-        verbose_name=_("Active"),
-        default=True,
-        help_text=_(
-            "Designates whether this user should be treated as active. "
-            "Unselect this instead of deleting accounts."
-        ),
-    )
     type = models.CharField(
         verbose_name=_("User type"),
         choices=USER_TYPE_CHOICES,
@@ -98,7 +78,7 @@ class Contact(models.Model):
     structure = models.CharField(max_length=15, verbose_name=_("Structure"), blank=True)
     building = models.CharField(max_length=15, verbose_name=_("Building"), blank=True)
     apartment = models.CharField(max_length=15, verbose_name=_("Apartment"), blank=True)
-    phone = models.CharField(max_length=20, verbose_name=_("Phone number"))
+    phone = PhoneNumberField(region="RU", max_length=12, verbose_name=_("Phone number"))
 
     class Meta:
         verbose_name = "Контакты пользователя"

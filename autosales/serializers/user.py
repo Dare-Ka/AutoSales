@@ -18,7 +18,7 @@ class UserSerializer(ModelSerializer):
         depth = 1
         fields = (
             "id",
-            "first_name",
+            "username" "first_name",
             "last_name",
             "email",
             "company",
