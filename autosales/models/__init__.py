@@ -10,7 +10,7 @@ __all__ = (
     "ProductInfo",
     "Order",
     "OrderItem",
-    "ConfirmEmailToken"
+    "ConfirmEmailToken",
 )
 from .user import User, UserManager, Contact
 from .shop import Shop, Category
