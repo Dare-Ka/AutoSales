@@ -16,6 +16,7 @@ STATE_CHOICES = (
 
 
 class Order(models.Model):
+    objects = models.manager.Manager()
     user = models.ForeignKey(
         User,
         verbose_name=_("User"),
@@ -47,6 +48,7 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
+    objects = models.manager.Manager()
     order = models.ForeignKey(
         Order,
         verbose_name=_("Order"),

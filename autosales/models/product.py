@@ -5,6 +5,7 @@ from .shop import Category, Shop
 
 
 class Product(models.Model):
+    objects = models.manager.Manager()
     name = models.CharField(verbose_name=_("Name"), max_length=80)
     categories = models.ManyToManyField(
         Category,
@@ -23,6 +24,7 @@ class Product(models.Model):
 
 
 class ProductInfo(models.Model):
+    objects = models.manager.Manager()
     model = models.CharField(verbose_name=_("Model"), max_length=80, blank=True)
     external_id = models.PositiveIntegerField(verbose_name=_("External ID"))
     product = models.ForeignKey(
@@ -57,6 +59,7 @@ class ProductInfo(models.Model):
 
 
 class Parameter(models.Model):
+    objects = models.manager.Manager()
     name = models.CharField(max_length=40, verbose_name=_("Name"))
 
     class Meta:
@@ -69,6 +72,7 @@ class Parameter(models.Model):
 
 
 class ProductParameter(models.Model):
+    objects = models.manager.Manager()
     product_info = models.ForeignKey(
         ProductInfo,
         verbose_name=_("Product`s information"),

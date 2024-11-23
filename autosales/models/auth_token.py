@@ -7,8 +7,9 @@ from django_rest_passwordreset.tokens import get_token_generator
 from .user import User
 
 
-
 class ConfirmEmailToken(models.Model):
+    objects = models.manager.Manager()
+
     @staticmethod
     def generate_key() -> str:
         return get_token_generator().generate_token()

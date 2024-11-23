@@ -5,6 +5,7 @@ from .user import User
 
 
 class Shop(models.Model):
+    objects = models.manager.Manager()
     name = models.CharField(verbose_name=_("Name"), max_length=50)
     url = models.URLField(verbose_name=_("Link"), null=True, blank=True)
     user = models.ForeignKey(
@@ -27,6 +28,7 @@ class Shop(models.Model):
 
 
 class Category(models.Model):
+    objects = models.manager.Manager()
     name = models.CharField(verbose_name=_("Name"), max_length=40)
     shops = models.ManyToManyField(
         Shop, verbose_name=_("Shops"), related_name="categories", blank=True
