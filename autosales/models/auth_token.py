@@ -1,5 +1,3 @@
-from typing import Optional
-
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from django_rest_passwordreset.tokens import get_token_generator
@@ -27,7 +25,7 @@ class ConfirmEmailToken(models.Model):
 
     key = models.CharField(_("Key"), max_length=64, db_index=True, unique=True)
 
-    def save(self, *args: Optional[tuple], **kwargs: Optional[dict]) -> None:
+    def save(self, *args, **kwargs):
         if not self.key:
             self.key = self.generate_key()
         return super(ConfirmEmailToken, self).save(*args, **kwargs)
