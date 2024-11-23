@@ -1,7 +1,7 @@
 from rest_framework.serializers import ModelSerializer, IntegerField
 from autosales.models import Order, OrderItem
-from autosales.serializers.product import ProductInfoSerializer
-from autosales.serializers.user import ContactSerializer
+from .product import ProductInfoSerializer
+from .user import ContactSerializer
 
 
 class OrderItemSerializer(ModelSerializer):
