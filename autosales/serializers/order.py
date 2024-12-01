@@ -1,7 +1,9 @@
+from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer, IntegerField
 from autosales.models import Order, OrderItem
 from .product import ProductInfoSerializer
 from .user import ContactSerializer
+from django.utils.translation import gettext_lazy as _
 
 
 class OrderItemSerializer(ModelSerializer):
@@ -18,6 +20,11 @@ class OrderItemSerializer(ModelSerializer):
         read_only_fields = ("id",)
         extra_kwargs = {"order": {"write_only": True}}
 
+    def validate(self, attrs):
+        if not attrs["order"] or not attrs["quantity"]:
+            raise ValidationError(_("Поля 'Заказ' и 'Количество' обязательны"))
+        return attrs
+
 
 class OrderSerializer(ModelSerializer):
     ordered_items = OrderItemSerializer(read_only=True, many=True)
@@ -29,6 +36,7 @@ class OrderSerializer(ModelSerializer):
         model = Order
         fields = (
             "id",
+            "user",
             "ordered_items",
             "state",
             "date_time",
@@ -36,3 +44,10 @@ class OrderSerializer(ModelSerializer):
             "contact",
         )
         read_only_fields = ("id",)
+
+    def validate(self, attrs):
+        if not attrs["user"] or not attrs["state"] or not attrs["contact"]:
+            raise ValidationError(
+                _("Поля 'Пользователь', 'Состояние' и 'Контакты' обязательны")
+            )
+        return attrs
