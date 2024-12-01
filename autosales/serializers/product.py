@@ -1,5 +1,7 @@
+from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer, StringRelatedField
 from autosales.models import Product, ProductInfo, ProductParameter
+from django.utils.translation import gettext_lazy as _
 
 
 class ProductSerializer(ModelSerializer):
@@ -10,6 +12,11 @@ class ProductSerializer(ModelSerializer):
         depth = 1
         fields = ("name", "categories")
 
+    def validate(self, attrs):
+        if not attrs["name"]:
+            raise ValidationError(_("Поле 'Имя' обязательно"))
+        return attrs
+
 
 class ProductParameterSerializer(ModelSerializer):
     parameter = StringRelatedField()
@@ -18,6 +25,11 @@ class ProductParameterSerializer(ModelSerializer):
         model = ProductParameter
         fields = ("parameter", "value")
 
+    def validate(self, attrs):
+        if not attrs["value"]:
+            raise ValidationError(_("Поле 'Значение' обязательно"))
+        return attrs
+
 
 class ProductInfoSerializer(ModelSerializer):
     product = ProductSerializer(read_only=True)
@@ -25,5 +37,29 @@ class ProductInfoSerializer(ModelSerializer):
 
     class Meta:
         model = ProductInfo
-        fields = "__all__"
+        fields = (
+            "id",
+            "external_id",
+            "model",
+            "product",
+            "shop",
+            "quantity",
+            "price",
+            "price_rrc",
+            "product_parameters",
+        )
         read_only_fields = ("id",)
+
+    def validate(self, attrs):
+        if (
+            not attrs["external_id"]
+            or not attrs["quantity"]
+            or not attrs["price"]
+            or not attrs["price_rrc"]
+        ):
+            raise ValidationError(
+                _(
+                    "Поля 'Внешний ID', 'Количество', 'Цена' и 'Рекомендуемая розничная цена' обязательны"
+                )
+            )
+        return attrs

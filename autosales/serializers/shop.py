@@ -1,6 +1,7 @@
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer
 from autosales.models import Shop, Category
+from django.utils.translation import gettext_lazy as _
 
 
 class CategorySerializer(ModelSerializer):
@@ -14,7 +15,7 @@ class CategorySerializer(ModelSerializer):
 
     def validate(self, attrs):
         if not attrs["name"]:
-            raise ValidationError("Поле 'Имя' обязательно")
+            raise ValidationError(_("Поле 'Имя' обязательно"))
         return attrs
 
 
@@ -31,5 +32,6 @@ class ShopSerializer(ModelSerializer):
         read_only_fields = ("id",)
 
     def validate(self, attrs):
-        if attrs["name"] or attrs["state"] is None:
-            raise ValidationError("Поля 'Имя' и 'Состояние обязательны'")
+        if not attrs["name"] or not attrs["state"]:
+            raise ValidationError(_("Поля 'Имя' и 'Состояние обязательны'"))
+        return attrs

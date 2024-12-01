@@ -1,6 +1,7 @@
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer
 from autosales.models import User, Contact
+from django.utils.translation import gettext_lazy as _
 
 
 class ContactSerializer(ModelSerializer):
@@ -21,7 +22,7 @@ class ContactSerializer(ModelSerializer):
         extra_kwargs = {"user": {"write_only": True}}
 
     def validate(self, attrs):
-        if attrs["city"] or attrs["street"] or attrs["phone"] is None:
+        if not attrs["city"] or not attrs["street"] or not attrs["phone"]:
             raise ValidationError(
                 "Поля 'Город', 'Улица' и 'Номер телефона' обязательны"
             )
@@ -30,7 +31,7 @@ class ContactSerializer(ModelSerializer):
     def validate_phone(self, attrs):
         if len(attrs["phone"][1:]) != 11:
             raise ValidationError(
-                "Номер телефона должен содержать 11 символов, не считая знака '+'"
+                _("Номер телефона должен содержать 11 символов, не считая знака '+'")
             )
         return attrs
 
@@ -55,10 +56,10 @@ class UserSerializer(ModelSerializer):
 
     def validate(self, attrs):
         if (
-            attrs["username"]
-            or attrs["first_name"]
-            or attrs["last_name"]
-            or attrs["email"] is None
+            not attrs["username"]
+            or not attrs["first_name"]
+            or not attrs["last_name"]
+            or not attrs["email"]
         ):
-            raise ValidationError("Поля 'username', 'Имя' и 'Фамилия' обязательны")
+            raise ValidationError(_("Поля 'username', 'Имя' и 'Фамилия' обязательны"))
         return attrs
