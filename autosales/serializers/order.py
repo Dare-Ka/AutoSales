@@ -21,7 +21,7 @@ class OrderItemSerializer(ModelSerializer):
         extra_kwargs = {"order": {"write_only": True}}
 
     def validate(self, attrs):
-        if not attrs["order"] or not attrs["quantity"]:
+        if not attrs.get("order") or not attrs.get("quantity"):
             raise ValidationError(_("Поля 'Заказ' и 'Количество' обязательны"))
         return attrs
 
@@ -46,7 +46,7 @@ class OrderSerializer(ModelSerializer):
         read_only_fields = ("id",)
 
     def validate(self, attrs):
-        if not attrs["user"] or not attrs["state"] or not attrs["contact"]:
+        if not attrs.get("user") or not attrs.get("state") or not attrs.get("contact"):
             raise ValidationError(
                 _("Поля 'Пользователь', 'Состояние' и 'Контакты' обязательны")
             )

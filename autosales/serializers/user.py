@@ -22,14 +22,14 @@ class ContactSerializer(ModelSerializer):
         extra_kwargs = {"user": {"write_only": True}}
 
     def validate(self, attrs):
-        if not attrs["city"] or not attrs["street"] or not attrs["phone"]:
+        if not attrs.get("city") or not attrs.get("street") or not attrs.get("phone"):
             raise ValidationError(
                 "Поля 'Город', 'Улица' и 'Номер телефона' обязательны"
             )
         return attrs
 
     def validate_phone(self, attrs):
-        if len(attrs["phone"][1:]) != 11:
+        if len(attrs.get("phone", "")[1:]) != 11:
             raise ValidationError(
                 _("Номер телефона должен содержать 11 символов, не считая знака '+'")
             )
@@ -56,10 +56,10 @@ class UserSerializer(ModelSerializer):
 
     def validate(self, attrs):
         if (
-            not attrs["username"]
-            or not attrs["first_name"]
-            or not attrs["last_name"]
-            or not attrs["email"]
+            not attrs.get("username")
+            or not attrs.get("first_name")
+            or not attrs.get("last_name")
+            or not attrs.get("email")
         ):
             raise ValidationError(_("Поля 'username', 'Имя' и 'Фамилия' обязательны"))
         return attrs

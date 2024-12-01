@@ -14,7 +14,7 @@ class CategorySerializer(ModelSerializer):
         read_only = ("id",)
 
     def validate(self, attrs):
-        if not attrs["name"]:
+        if not attrs.get("name"):
             raise ValidationError(_("Поле 'Имя' обязательно"))
         return attrs
 
@@ -32,6 +32,6 @@ class ShopSerializer(ModelSerializer):
         read_only_fields = ("id",)
 
     def validate(self, attrs):
-        if not attrs["name"] or not attrs["state"]:
+        if not attrs.get("name") or not attrs.get("state"):
             raise ValidationError(_("Поля 'Имя' и 'Состояние обязательны'"))
         return attrs

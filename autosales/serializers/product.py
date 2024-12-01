@@ -13,7 +13,7 @@ class ProductSerializer(ModelSerializer):
         fields = ("name", "categories")
 
     def validate(self, attrs):
-        if not attrs["name"]:
+        if not attrs.get("name"):
             raise ValidationError(_("Поле 'Имя' обязательно"))
         return attrs
 
@@ -26,7 +26,7 @@ class ProductParameterSerializer(ModelSerializer):
         fields = ("parameter", "value")
 
     def validate(self, attrs):
-        if not attrs["value"]:
+        if not attrs.get("value"):
             raise ValidationError(_("Поле 'Значение' обязательно"))
         return attrs
 
@@ -52,10 +52,10 @@ class ProductInfoSerializer(ModelSerializer):
 
     def validate(self, attrs):
         if (
-            not attrs["external_id"]
-            or not attrs["quantity"]
-            or not attrs["price"]
-            or not attrs["price_rrc"]
+            not attrs.get("external_id")
+            or not attrs.get("quantity")
+            or not attrs.get("price")
+            or not attrs.get("price_rrc")
         ):
             raise ValidationError(
                 _(
