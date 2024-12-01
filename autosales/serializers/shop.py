@@ -17,6 +17,7 @@ class CategorySerializer(ModelSerializer):
             raise ValidationError("Поле 'Имя' обязательно")
         return attrs
 
+
 class ShopSerializer(ModelSerializer):
     class Meta:
         model = Shop
