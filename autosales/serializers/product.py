@@ -1,3 +1,5 @@
+from time import process_time
+
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer, StringRelatedField
 from autosales.models import Product, ProductInfo, ProductParameter
@@ -63,3 +65,23 @@ class ProductInfoSerializer(ModelSerializer):
                 )
             )
         return attrs
+
+    def validate_external_id(self, external_id):
+        if external_id <= 0:
+            raise ValidationError(_("Внешний ID должен быть числом больше 0"))
+        return external_id
+
+    def validate_quantity(self, quantity):
+        if quantity <= 0:
+            raise ValidationError(_("Количество должно быть числом больше 0"))
+        return quantity
+
+    def validate_price(self, price):
+        if price <= 0:
+            raise ValidationError(_("Цена должна быть числом больше 0"))
+        return price
+
+    def validate_price_rrc(self, price_rcc):
+        if price_rcc <= 0:
+            raise ValidationError(_("Розничная цена должна быть числом больше 0"))
+        return price_rcc

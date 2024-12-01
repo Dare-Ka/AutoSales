@@ -25,6 +25,11 @@ class OrderItemSerializer(ModelSerializer):
             raise ValidationError(_("Поля 'Заказ' и 'Количество' обязательны"))
         return attrs
 
+    def validate_quantity(self, quantity):
+        if quantity <= 0:
+            raise ValidationError(_("Количество должно быть числом больше 0"))
+        return quantity
+
 
 class OrderSerializer(ModelSerializer):
     ordered_items = OrderItemSerializer(read_only=True, many=True)

@@ -63,3 +63,13 @@ class UserSerializer(ModelSerializer):
         ):
             raise ValidationError(_("Поля 'username', 'Имя' и 'Фамилия' обязательны"))
         return attrs
+
+    def validated_username(self, username):
+        if User.objects.filter(username=username).exists():
+            raise ValidationError(_("Пользователь с таким именем уже существует"))
+        return username
+
+    def validate_email(self, email):
+        if User.objects.filter(email=email).exists():
+            raise ValidationError(_("Email уже зарегистрирован"))
+        return email
