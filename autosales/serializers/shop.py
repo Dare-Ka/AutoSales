@@ -11,6 +11,7 @@ class CategorySerializer(ModelSerializer):
         )
         read_only = ("id",)
 
+    def validate(self, attrs):
 
 class ShopSerializer(ModelSerializer):
     class Meta:

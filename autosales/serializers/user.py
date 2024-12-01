@@ -20,18 +20,19 @@ class ContactSerializer(ModelSerializer):
         read_only_fields = ("id",)
         extra_kwargs = {"user": {"write_only": True}}
 
-        def validate(self, data):
-            if data["city"] or data["street"] or data["phone"] is None:
-                raise ValidationError(
-                    "Поля 'Город', 'Улица' и 'Номер телефона' обязательны"
-                )
-            return data
+    def validate(self, attrs):
+        if attrs["city"] or attrs["street"] or attrs["phone"] is None:
+            raise ValidationError(
+                "Поля 'Город', 'Улица' и 'Номер телефона' обязательны"
+            )
+        return attrs
 
-        def validate_phone(self, data):
-            if len(data["phone"][1:]) != 11:
-                raise ValidationError(
-                    "Номер телефона должен содержать 11 символов, не считая знака '+'"
-                )
+    def validate_phone(self, attrs):
+        if len(attrs["phone"][1:]) != 11:
+            raise ValidationError(
+                "Номер телефона должен содержать 11 символов, не считая знака '+'"
+            )
+        return attrs
 
 
 class UserSerializer(ModelSerializer):
@@ -52,12 +53,12 @@ class UserSerializer(ModelSerializer):
         )
         read_only_fields = ("id",)
 
-        def validate(self, data):
-            if (
-                data["username"]
-                or data["first_name"]
-                or data["last_name"]
-                or data["email"] is None
-            ):
-                raise ValidationError("Поля 'username', 'Имя' и 'Фамилия' обязательны")
-            return data
+    def validate(self, attrs):
+        if (
+            attrs["username"]
+            or attrs["first_name"]
+            or attrs["last_name"]
+            or attrs["email"] is None
+        ):
+            raise ValidationError("Поля 'username', 'Имя' и 'Фамилия' обязательны")
+        return attrs
