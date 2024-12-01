@@ -52,36 +52,32 @@ class ProductInfoSerializer(ModelSerializer):
         )
         read_only_fields = ("id",)
 
-    def validate(self, attrs):
-        if (
-            not attrs.get("external_id")
-            or not attrs.get("quantity")
-            or not attrs.get("price")
-            or not attrs.get("price_rrc")
-        ):
-            raise ValidationError(
-                _(
-                    "Поля 'Внешний ID', 'Количество', 'Цена' и 'Рекомендуемая розничная цена' обязательны"
-                )
-            )
-        return attrs
-
     def validate_external_id(self, external_id):
+        if not external_id:
+            raise ValidationError(_("Поле 'Внешний ID' является обязательным"))
         if external_id <= 0:
             raise ValidationError(_("Внешний ID должен быть числом больше 0"))
         return external_id
 
     def validate_quantity(self, quantity):
+        if not quantity:
+            raise ValidationError(_("Поле 'Количество' является обязательным"))
         if quantity <= 0:
             raise ValidationError(_("Количество должно быть числом больше 0"))
         return quantity
 
     def validate_price(self, price):
+        if not price:
+            raise ValidationError(_("Поле 'Цена' является обязательным"))
         if price <= 0:
             raise ValidationError(_("Цена должна быть числом больше 0"))
         return price
 
     def validate_price_rrc(self, price_rcc):
+        if not price_rcc:
+            raise ValidationError(
+                _("Поле 'Рекомендуемая розничная цена' является обязательным")
+            )
         if price_rcc <= 0:
             raise ValidationError(_("Розничная цена должна быть числом больше 0"))
         return price_rcc
