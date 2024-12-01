@@ -45,7 +45,6 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ["first_name", "last_name", "username"]
     objects = UserManager()
     USERNAME_FIELD = "email"
-    email = models.EmailField(verbose_name=_("Email address"), unique=True)
     company = models.CharField(verbose_name=_("Company"), max_length=40, blank=True)
     position = models.CharField(verbose_name=_("Position"), max_length=40, blank=True)
     type = models.CharField(
