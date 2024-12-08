@@ -1,3 +1,5 @@
+from django.contrib.auth.password_validation import validate_password
+from django.http import JsonResponse
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer
 from autosales.models import User, Contact
@@ -49,6 +51,7 @@ class UserSerializer(ModelSerializer):
             "username",
             "first_name",
             "last_name",
+            "password",
             "email",
             "company",
             "position",
@@ -61,12 +64,24 @@ class UserSerializer(ModelSerializer):
             raise ValidationError(_("Поля 'username', 'Имя' и 'Фамилия' обязательны"))
         return attrs
 
-    def validated_username(self, username):
+    def validate_username(self, username):
         if not username:
             raise ValidationError(_("Поле 'username' является обязательным"))
         if User.objects.filter(username=username).exists():
             raise ValidationError(_("Пользователь с таким именем уже существует"))
         return username
+
+    def validate_password(self, password):
+        if not password:
+            raise ValidationError(_("Поле 'Пароль' является обязательным"))
+        try:
+            validate_password(password)
+        except Exception as password_error:
+            error_array = [item for item in password_error]
+            raise ValidationError(
+                {"Status": False, "Errors": {"password": error_array}}
+            )
+        return password
 
     def validate_email(self, email):
         if not email:
@@ -74,3 +89,9 @@ class UserSerializer(ModelSerializer):
         if User.objects.filter(email=email).exists():
             raise ValidationError(_("Email уже зарегистрирован"))
         return email
+
+    def create(self, validated_data):
+        user = User(**validated_data)
+        user.set_password(validated_data["password"])
+        user.save()
+        return user
