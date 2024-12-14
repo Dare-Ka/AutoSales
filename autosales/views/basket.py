@@ -45,7 +45,10 @@ class BasketView(ModelViewSet):
             try:
                 items_dict = load_json(items_sting)
             except ValueError:
-                return Response({"Status": False, "Errors": "Неверный формат запроса"})
+                return Response(
+                    {"Status": False, "Errors": "Неверный формат запроса"},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
             else:
                 basket, _ = Order.objects.get_or_create(
                     user_id=request.user.id, state="basket"
@@ -71,7 +74,8 @@ class BasketView(ModelViewSet):
                     status=status.HTTP_200_OK,
                 )
         return Response(
-            {"Status": False, "Errors": "Не указаны все необходимые аргументы"}
+            {"Status": False, "Errors": "Не указаны все необходимые аргументы"},
+            status=status.HTTP_403_FORBIDDEN,
         )
 
     def update(self, request, *args, **kwargs):
@@ -86,7 +90,10 @@ class BasketView(ModelViewSet):
             try:
                 items_dict = load_json(items_sting)
             except ValueError:
-                return Response({"Status": False, "Errors": "Неверный формат запроса"})
+                return Response(
+                    {"Status": False, "Errors": "Неверный формат запроса"},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
             else:
                 basket, _ = Order.objects.get_or_create(
                     user_id=request.user.id, state="basket"
@@ -103,7 +110,8 @@ class BasketView(ModelViewSet):
 
                 return Response({"Status": True, "Обновлено объектов": objects_updated})
         return Response(
-            {"Status": False, "Errors": "Не указаны все необходимые аргументы"}
+            {"Status": False, "Errors": "Не указаны все необходимые аргументы"},
+            status=status.HTTP_403_FORBIDDEN,
         )
 
     def destroy(self, request, *args, **kwargs):
@@ -133,5 +141,6 @@ class BasketView(ModelViewSet):
                     status=status.HTTP_200_OK,
                 )
         return Response(
-            {"Status": False, "Errors": "Не указаны все необходимые аргументы"}
+            {"Status": False, "Errors": "Не указаны все необходимые аргументы"},
+            status=status.HTTP_403_FORBIDDEN,
         )
