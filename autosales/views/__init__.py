@@ -11,11 +11,17 @@ __all__ = (
     "ConfirmAccountView",
     "AccountDetails",
     "ContactView",
-    "LoginAccount"
+    "LoginAccount",
 )
 from basket import BasketView
 from order import OrderView
 from partner import PartnerState, PartnerOrders, PartnerUpdate
 from product import ProductInfoView
 from shop import ShopView, CategoryView
-from user import RegisterAccountView, ConfirmAccountView, AccountDetails, ContactView, LoginAccount
+from user import (
+    RegisterAccountView,
+    ConfirmAccountView,
+    AccountDetails,
+    ContactView,
+    LoginAccount,
+)
